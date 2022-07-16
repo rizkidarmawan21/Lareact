@@ -13,7 +13,7 @@ const Paginator = ({ meta }) => {
                 if(i == meta.links.length-1 || i == 0) {
                     return ""
                 }else {
-                    return <Link href={link.url} className={`btn btn-outline ${link.active && "btn-active"} `}>{link.label}</Link>
+                    return <Link key={i} href={link.url} className={`btn btn-outline ${link.active && "btn-active"} `}>{link.label}</Link>
                 }
             })}
             {/* <Link className="btn">Page {current}</Link> */}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\NewsCollection;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class NewsController extends Controller
@@ -16,7 +17,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = new NewsCollection(News::paginate(8));
+        $news = new NewsCollection(News::OrderByDesc('id')->paginate(8));
         return Inertia::render('Homepage',[
             'title'=> 'CuyNews Homepage',
             'description' => "Selamat datang di portal berita Cuy Universe",
@@ -42,7 +43,13 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $news = new News();
+        $news->title = $request->title;
+        $news->description = $request->description;
+        $news->category = $request->category;
+        $news->author = auth()->user()->email;
+        $news->save();
+        return redirect()->back()->with('message', 'Berita berhasil ditambahkan');
     }
 
     /**
@@ -53,7 +60,12 @@ class NewsController extends Controller
      */
     public function show(News $news)
     {
-        //
+        $myNews = News::where('author',auth()->user()->email)->orderbyDesc('id')->get();
+        // dd($myNews);
+        return Inertia::render('Dashboard',[
+            'myNews' => $myNews,
+        ]);
+
     }
 
     /**
